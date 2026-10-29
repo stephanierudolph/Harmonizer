@@ -6,6 +6,7 @@ class Buttons():
         self.infoText = None
         self.info = None
         self.informationFrame = None
+        self.scaleLabels =[]
         self.intervals = [" 1","♭2"," 2","♭3"," 3"," 4","♭5"," 5","♭6"," 6", "♭7"," 7"]
         self.triadInfo = ["A major triad is composed of the root note, a major third, and a perfect fifth. A major triad feels \nbright and stable.", 
         "A minor triad is composed of the root note, a minor third, and a perfect fifth. A minor triad feels \ndark and stable.", 
@@ -28,19 +29,33 @@ class Buttons():
         modedChord.sort()
         modifier = chord.output[chord.inversion]%12 #accounts for inversions
 
+        scaleFrame.grid_rowconfigure(0, weight=1)
+        if not self.scaleLabels:
+            for i in range(12):
+                scaleFrame.grid_columnconfigure(i + 1, weight=1, uniform="equal_width")
+                label = tk.Label(
+                        scaleFrame,
+                        borderwidth=4,
+                        relief='flat',
+                        padx=12,
+                        pady=4
+                    )
+                label.grid(row=0, column=i + 1, sticky="nsew")
+                self.scaleLabels.append(label)
+                
         for i in range(0, 12):
-            text = self.intervals[(i+modifier)%12]
-            if ((i+modifier)%12) in modedChord:
+            index = (i +modifier) % 12
+            text = self.intervals[index]
+            if index in modedChord:
                 bgc = "white"
-                font = "HiraginoSans 16 bold"
+                font = ('HiraginoSans', 16, 'bold')
                 color = "black" #"#457D0C"
             else:
                 bgc = "#eeeeee"
-                font = "HiraginoSans 16"
+                font = ('HiraginoSans', 16)
                 color="black"
 
-            scaleLabel = tk.Label(scaleFrame, text = text, font = font, borderwidth=4, bg=bgc, foreground=color,padx=12, pady=4)
-            scaleLabel.grid(row=0, column=i+1)
+            self.scaleLabels[i].config(text=text, font=font, bg=bgc, foreground=color)
 
     def checkBox(self, buttons, var, chord, inverBtns, scaleFrame):
         for i in range(len(buttons)):
